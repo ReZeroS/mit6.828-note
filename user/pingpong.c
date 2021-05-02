@@ -15,12 +15,12 @@ int main(int argc, char *argv[]) {
     pipe(child_fd);
     char buf[64];
 
-    if (fork()) {
+    if (fork()) {// child id
         // Parent
         write(parent_fd[1], "ping", strlen("ping"));
         read(child_fd[0], buf, 4);
         printf("%d: received %s\n", getpid(), buf);
-    } else {
+    } else {// 0
         // Child
         read(parent_fd[0], buf, 4);
         printf("%d: received %s\n", getpid(), buf);
