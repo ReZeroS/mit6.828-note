@@ -12,6 +12,11 @@
 //    uint64 size; // 文件大小
 //};
 
+//struct dirent {
+//  ushort inum;
+//  char name[DIRSIZ];
+//};
+
 #define STDDER_FILENO 2
 #define O_RDONLY 0
 

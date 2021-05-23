@@ -54,7 +54,7 @@ struct dinode {
 #define DIRSIZ 14
 
 struct dirent {
-  ushort inum;
-  char name[DIRSIZ];
+  ushort inum;/* inode number 索引节点号 */
+  char name[DIRSIZ];/* 文件名，最多14字符 */
 };
 
