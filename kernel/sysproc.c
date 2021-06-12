@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -109,3 +110,36 @@ sys_trace(void)
     myproc()->mask = mask;
     return 0;
 }
+
+
+//sysinfo needs to copy a struct sysinfo back to user space; see sys_fstat() (kernel/sysfile.c)
+// and filestat() (kernel/file.c) for examples of how to do that using copyout().
+//
+uint64
+sys_sysinfo(void)
+{
+    struct sysinfo si;
+    struct proc *p = myproc();
+    uint64 addr;
+
+    //
+    // todo 这里没懂，p->trapframe->a0 此时存的是用户态传入第一个参数的地址么 sysinfo(&info) 也就是info的地址么？
+    //syscall: p->trapframe->a0 = syscalls[num]();
+
+    //xv6book里提了这么一句
+    //The user code places the arguments for exec in registers a0 and a1, and puts the system call
+    //number in a7
+
+    if(argaddr(0, &addr) < 0)
+        return -1;
+
+    // init info of the amount of free memory and the number of processors
+    si.freemem = amount_free_memory();
+    si.nproc = number_processor();
+
+    if(copyout(p->pagetable, addr, (char *)&si, sizeof(si)) < 0)
+        return -1;
+    return 0;
+}
+
+

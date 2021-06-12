@@ -105,6 +105,7 @@ extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
 extern uint64 sys_trace(void);
+extern uint64 sys_sysinfo(void);
 
 // syscalls[SYS_fork] = sys_fork equals syscalls[1] = sys_fork
 static uint64 (*syscalls[])(void) = {
@@ -130,10 +131,11 @@ static uint64 (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_trace]   sys_trace,
+[SYS_sysinfo] sys_sysinfo
 };
 
 // syscall names array
-static char *syscall_desc[23] = {
+static char *syscall_desc[24] = {
         "",
         "fork",
         "exit",
@@ -156,7 +158,8 @@ static char *syscall_desc[23] = {
         "sbrk",
         "sleep",
         "uptime",
-        "trace"
+        "trace",
+        "sysinfo"
 };
 
 
@@ -171,6 +174,7 @@ syscall(void)
   // parse successfully
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();
+    // when do a trace
     if (p->mask & (1 << num)) {
         printf("%d: syscall %s -> %d\n", p->pid, syscall_desc[num - 1], p->trapframe->a0);
     }

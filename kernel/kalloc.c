@@ -80,3 +80,16 @@ kalloc(void)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
 }
+
+// see kalloc function
+//To collect the amount of free memory, add a function to kernel/kalloc.c
+int amount_free_memory(){
+
+    struct run *r;
+    int count = 0;
+    for (r = kmem.freelist; r; r = r->next) {
+        count++;
+    }
+    return count * PGSIZE;
+
+}
